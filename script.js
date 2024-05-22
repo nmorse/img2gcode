@@ -1,16 +1,19 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
+const ready = document.getElementById('ready');
 const snap = document.getElementById('snap');
 
 // Get access to the camera
-navigator.mediaDevices.getUserMedia({ video: true })
+ready.addEventListener("click", function() {
+    navigator.mediaDevices.getUserMedia({ video: true })
     .then(function(stream) {
         video.srcObject = stream;
     })
     .catch(function(err) {
         console.log("An error occurred: " + err);
     });
+});
 
 // Trigger photo take
 snap.addEventListener("click", function() {
