@@ -24,7 +24,7 @@ snap.addEventListener("click", function() {
 
 // Load reference image
 const referenceImage = new Image();
-referenceImage.src = 'test.png';  // Replace with the actual path to the reference image
+referenceImage.src = './test2.png';  // Replace with the actual path to the reference image
 
 referenceImage.onload = function() {
     const refCanvas = document.createElement('canvas');
@@ -45,34 +45,36 @@ referenceImage.onload = function() {
         // Subtract the images
         const diffMat = new cv.Mat();
         cv.absdiff(refMat, capturedMat, diffMat);
+        
+        cv.imshow('canvasOutput', diffMat);
 
-        // Convert the difference image to binary
-        const binaryMat = new cv.Mat();
-        cv.threshold(diffMat, binaryMat, 50, 255, cv.THRESH_BINARY);
+        // // // Convert the difference image to binary
+        // // const binaryMat = new cv.Mat();
+        // // cv.threshold(diffMat, binaryMat, 50, 255, cv.THRESH_BINARY);
 
-        // Find contours
-        const contours = new cv.MatVector();
-        const hierarchy = new cv.Mat();
-        cv.findContours(binaryMat, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        // // // Find contours
+        // // const contours = new cv.MatVector();
+        // // const hierarchy = new cv.Mat();
+        // // cv.findContours(binaryMat, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
-        // Generate G-code
-        const gcode = [];
-        for (let i = 0; i < contours.size(); i++) {
-            const contour = contours.get(i);
-            gcode.push(`G0 X${contour.data32S[0]} Y${contour.data32S[1]}`);
-            for (let j = 1; j < contour.data32S.length; j += 2) {
-                gcode.push(`G1 X${contour.data32S[j]} Y${contour.data32S[j+1]}`);
-            }
-        }
+        // // // Generate G-code
+        // // const gcode = [];
+        // // for (let i = 0; i < contours.size(); i++) {
+        // //     const contour = contours.get(i);
+        // //     gcode.push(`G0 X${contour.data32S[0]} Y${contour.data32S[1]}`);
+        // //     for (let j = 1; j < contour.data32S.length; j += 2) {
+        // //         gcode.push(`G1 X${contour.data32S[j]} Y${contour.data32S[j+1]}`);
+        // //     }
+        // // }
 
-        console.log(gcode.join('\n'));
+        // // console.log(gcode.join('\n'));
 
         // Clean up
         refMat.delete();
         capturedMat.delete();
         diffMat.delete();
-        binaryMat.delete();
-        contours.delete();
-        hierarchy.delete();
+        // // binaryMat.delete();
+        // // contours.delete();
+        // // hierarchy.delete();
     });
 };
