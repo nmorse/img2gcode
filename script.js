@@ -3,6 +3,8 @@ const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 const ready = document.getElementById('ready');
 const snap = document.getElementById('snap');
+const w = 320 // 640
+const h = 240 // 480
 
 // Get access to the camera
 ready.addEventListener("click", function() {
@@ -17,7 +19,7 @@ ready.addEventListener("click", function() {
 
 // Trigger photo take
 snap.addEventListener("click", function() {
-    context.drawImage(video, 0, 0, 640, 480);
+    context.drawImage(video, 0, 0, w, h);
     const capturedImage = canvas.toDataURL('image/png');
     // You can send this image to the server or process it as needed
 });
@@ -29,14 +31,15 @@ referenceImage.src = './test2.png';  // Replace with the actual path to the refe
 referenceImage.onload = function() {
     const refCanvas = document.createElement('canvas');
     const refContext = refCanvas.getContext('2d');
-    refCanvas.width = 640;
-    refCanvas.height = 480;
-    refContext.drawImage(referenceImage, 0, 0, 640, 480);
-    const refImageData = refContext.getImageData(0, 0, 640, 480);
+    refCanvas.width = w;
+    refCanvas.height = h;
+    refContext.drawImage(referenceImage, 0, 0, w, h);
+    const refImageData = refContext.getImageData(0, 0, w, h);
+    console.log(refImageData.data[w*h/2], refImageData.data[w*h/2 + 1])
 
     snap.addEventListener("click", function() {
-        context.drawImage(video, 0, 0, 640, 480);
-        const capturedImageData = context.getImageData(0, 0, 640, 480);
+        context.drawImage(video, 0, 0, w, h);
+        const capturedImageData = context.getImageData(0, 0, w, h);
 
         // Convert ImageData to cv.Mat
         const refMat = cv.matFromImageData(refImageData);
