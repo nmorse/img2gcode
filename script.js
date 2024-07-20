@@ -105,7 +105,7 @@ snap.addEventListener("click", function () {
     let paintColor = []
     paintColor = [200, 200, 250] 
     brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    paintColor = [250, 250, 200] 
+    paintColor = [250, 200, 200] 
     brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
     paintColor = [200, 250, 200] 
     brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
