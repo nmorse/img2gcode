@@ -41,9 +41,9 @@ const getColor = (img, x, y) => {
 
 const setColorAt = (img, c, x, y) => {
     const i = x*4 + y*w*4
-    img.data[i] = c[0]
-    img.data[i+1] = c[1]
-    img.data[i+2] = c[2]
+    img.data[i] = Math.min(255, Math.max(0, c[0]))
+    img.data[i+1] = Math.min(255, Math.max(0, c[1]))
+    img.data[i+2] = Math.min(255, Math.max(0, c[2]))
 }
 
 const lighterThan = (c1, c2) => (c1[0] >= c2[0] && c1[1] >= c2[1] && c1[2] >= c2[2])
@@ -57,7 +57,7 @@ const scanFor = (c, image) => {
                 stroke.push({x, y})
                 let y2 = y+1
                 while(y2 < h && lighterThan(c, getColor(image, x, y2))) {
-                    stroke.push({x, y2})
+                    stroke.push({x, y:y2})
                     y2++
                 }
                 return stroke
@@ -72,6 +72,13 @@ const lightenColor = (c1, c2) => {
     Math.min(255, c1[1]+(255-c2[1])), 
     Math.min(255, c1[2]+(255-c2[2]))]
 }
+const clearCanvas = (ctx) => {
+    ctx.clearRect(0, 0, ctx.width, ctx.height)
+    ctx.beginPath();
+    ctx.fillStyle = "rgb(255 255 255 / 1.0)";
+    ctx.fillRect(0, 0, ctx.width, ctx.height);
+}
+
 
 snap.addEventListener("click", function () {
     const refCanvas = document.getElementById('canvasOutput');
@@ -85,6 +92,7 @@ snap.addEventListener("click", function () {
 
     const outCanvas2 = document.getElementById('canvasOutput2');
     const outContext2 = outCanvas2.getContext('2d');
+    clearCanvas(outContext2)
 
     for(let x = 0; x < w; x++) {
         for(let y = 0; y < h; y++) {
@@ -100,15 +108,34 @@ snap.addEventListener("click", function () {
     const outContext3 = outCanvas3.getContext('2d');
     const outCanvas4 = document.getElementById('canvasOutput4');
     const outContext4 = outCanvas4.getContext('2d');
+    clearCanvas(outContext3)
+    clearCanvas(outContext4)
     // outContext4.globalCompositeOperation = "darken"
     
     let paintColor = []
-    paintColor = [200, 200, 250] 
-    brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    paintColor = [250, 200, 200] 
-    brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    paintColor = [200, 250, 200] 
-    brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    let brushStrokes = []
+    // paintColor = [200, 200, 250] 
+    // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // paintColor = [250, 200, 200] 
+    // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // paintColor = [200, 250, 200] 
+    // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+
+    paintColor = [140, 140, 140]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    console.log(paintColor, brushStrokes)
+    paintColor = [240, 240, 240]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    console.log(paintColor, brushStrokes)
+    paintColor = [255, 250, 250]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    console.log(paintColor, brushStrokes)
+    // paintColor = [255, 130, 255] 
+    // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // console.log(paintColor, brushStrokes)
+    // paintColor = [130, 255, 255] 
+    // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // console.log(paintColor, brushStrokes)
 
     // paintColor = [100, 100, 250] 
     // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
@@ -121,6 +148,7 @@ snap.addEventListener("click", function () {
 
 function brushWithColor(paintColor, capturedImageData, outContext3, outContext4) {
     let moreToDo = true
+    const allStrokes = []
     while (moreToDo) {
         const stroke = scanFor(paintColor, capturedImageData);
         stroke.map((ele) => {
@@ -134,13 +162,16 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4)
 
 
             // outContext4.fillStyle = `rgba(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} 1)`
-            outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.333)`;
+            outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.666)`;
             outContext4.beginPath();
             outContext4.rect(ele.x * 10, ele.y * 10, 10, 10);
             outContext4.fill();
         });
         moreToDo = (stroke.length > 0);
+        if (moreToDo) {
+            allStrokes.push({x:stroke[0].x, y:stroke[0].y, delta_y:stroke.length})
+        }
     }
-    return moreToDo;
+    return allStrokes;
 }
 
