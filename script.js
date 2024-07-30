@@ -3,8 +3,9 @@ const canvas = document.getElementById('canvasSnap');
 const context = canvas.getContext('2d');
 const ready = document.getElementById('ready');
 const snap = document.getElementById('snap');
-const w = 24 // 320 // 640
-const h = 16 // 240 // 480
+const w = 48 // 24 // 320 // 640
+const h = 32 //16 // 240 // 480
+const scale = 5 // 10
 
 // Get access to the camera
 ready.addEventListener("click", function () {
@@ -84,15 +85,15 @@ const clearCanvas = (ctx, width, height) => {
 const r = (scale = 1, offset = 0) => Math.random()*scale+offset
 let gcodes = []
 const addGCodes = (bs) => {
-    const f = 4 // scale factor (150 / 24 === 6.25) (100 / 16 is 6.25) 
+    const f = 4 * (scale / 10) // scale factor (150 / 24 === 6.25) (100 / 16 is 6.25) 
     const d = 3.5 // depth
     const o = 20 // x and y offset
     const a = 10 // approach
-    const r = r()*f
-    gcodes.push(`G0 X${bs.x*f+o+r} Y${bs.y*f-a+o} Z0`)
-    gcodes.push(`G1 F800 X${bs.x*f+o+r} Y${bs.y*f+o} Z${d}`)
-    gcodes.push(`G1 X${bs.x*f+o+r} Y${bs.y*f+bs.delta_y*f+o} Z${d}`)
-    gcodes.push(`G1 X${bs.x*f+o+r} Y${bs.y*f+bs.delta_y*f+a+o} Z0`)
+    const ra = r()*f
+    gcodes.push(`G0 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f-a+o).toFixed(4)} Z0`)
+    gcodes.push(`G1 F800 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+o).toFixed(4)} Z${d}`)
+    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+bs.delta_y*f+o).toFixed(4)} Z${d}`)
+    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+bs.delta_y*f+a+o).toFixed(4)} Z0`)
 }
 
 snap.addEventListener("click", function () {
@@ -116,7 +117,7 @@ snap.addEventListener("click", function () {
             const color = getColor(capturedImageData, x, y)
             outContext2.fillStyle = `rgb(${color[0]} ${color[1]} ${color[2]})`;
             outContext2.beginPath(); // Start a new path
-            outContext2.rect(x*10, y*10, 10, 10); // Add a rectangle to the current path
+            outContext2.rect(x*scale, y*scale, scale, scale); // Add a rectangle to the current path
             outContext2.fill(); // Render the path
         }
     }
@@ -148,20 +149,27 @@ snap.addEventListener("click", function () {
     paintColor = [255, 255, 170]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 0);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G4 P10`)
+    gcodes.push(`G0 X0 Y0 Z0`)
+    gcodes.push(`M0`) //`G4 P10`)
     brushStrokes.map(addGCodes)
 
     paintColor = [255, 170, 255]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 1);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G4 P20`)
+    gcodes.push(`G0 X0 Y0 Z0`)
+    gcodes.push(`M0`) // `G4 P20`)
     brushStrokes.map(addGCodes)
 
     paintColor = [170, 255, 255]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 2);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G4 P20`)
+    gcodes.push(`G0 X0 Y0 Z0`)
+    gcodes.push(`M0`) //`G4 P20`)
     brushStrokes.map(addGCodes)
+    gcodes.push(`G0 Z0`)
+    gcodes.push(`G0 X0 Y0`)
+    gcodes.push(`M2`)
+
 
     console.log(gcodes.join('\n'))
 
@@ -204,19 +212,19 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4,
             setColorAt(capturedImageData, reducedColor, ele.x, ele.y);
             outContext3.fillStyle = `rgb(${reducedColor[0]} ${reducedColor[1]} ${reducedColor[2]})`;
             outContext3.beginPath();
-            outContext3.rect(ele.x * 10, ele.y * 10, 10, 10); // Add a rectangle to the current path
+            outContext3.rect(ele.x * scale, ele.y * scale, scale, scale); // Add a rectangle to the current path
             outContext3.fill(); // Render the path
 
 
             // outContext4.fillStyle = `rgba(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} 1)`
             outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.666)`;
             outContext4.beginPath();
-            outContext4.rect(ele.x * 10, ele.y * 10, 10, 10);
+            outContext4.rect(ele.x * scale, ele.y * scale, scale, scale);
             outContext4.fill();
 
             outContext4.fillStyle = `rgb(0 0 0 / 0.666)`;
             outContext4.beginPath();
-            outContext4.rect(ele.x * 10 + randomX, ele.y * 10, 1, 10);
+            outContext4.rect(ele.x * scale + randomX, ele.y * scale, 1, scale);
             outContext4.fill();
         });
         moreToDo = (stroke.length > 0);
