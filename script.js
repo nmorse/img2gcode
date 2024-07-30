@@ -24,15 +24,15 @@ ready.addEventListener("click", function () {
 //     // You can send this image to the server or process it as needed
 // });
 
-// Load reference image
-const referenceImage = new Image();
-referenceImage.src = './test2.png';  // Replace with the actual path to the reference image
+// // Load reference image
+// const referenceImage = new Image();
+// referenceImage.src = './test2.png';  // Replace with the actual path to the reference image
 
-referenceImage.onload = function () {
-    const refCanvas = document.getElementById('canvasOutput');
-    const refContext = refCanvas.getContext('2d');
-    refContext.drawImage(referenceImage, 0, 0, w, h);
-};
+// referenceImage.onload = function () {
+//     const refCanvas = document.getElementById('canvasOutput');
+//     const refContext = refCanvas.getContext('2d');
+//     refContext.drawImage(referenceImage, 0, 0, w, h);
+// };
 
 const getColor = (img, x, y) => {
     const i = x*4 + y*w*4
@@ -72,27 +72,44 @@ const lightenColor = (c1, c2) => {
     Math.min(255, c1[1]+(255-c2[1])), 
     Math.min(255, c1[2]+(255-c2[2]))]
 }
-const clearCanvas = (ctx) => {
-    ctx.clearRect(0, 0, ctx.width, ctx.height)
+
+const clearCanvas = (ctx, width, height) => {
+    ctx.clearRect(0, 0, width, height)
     ctx.beginPath();
     ctx.fillStyle = "rgb(255 255 255 / 1.0)";
-    ctx.fillRect(0, 0, ctx.width, ctx.height);
+    ctx.rect(0, 0, width, height);
+    ctx.fill();
 }
 
+const r = (scale = 1, offset = 0) => Math.random()*scale+offset
+let gcodes = []
+const addGCodes = (bs) => {
+    const f = 4 // scale factor (150 / 24 === 6.25) (100 / 16 is 6.25) 
+    const d = 3.5 // depth
+    const o = 20 // x and y offset
+    const a = 10 // approach
+    const r = r()*f
+    gcodes.push(`G0 X${bs.x*f+o+r} Y${bs.y*f-a+o} Z0`)
+    gcodes.push(`G1 F800 X${bs.x*f+o+r} Y${bs.y*f+o} Z${d}`)
+    gcodes.push(`G1 X${bs.x*f+o+r} Y${bs.y*f+bs.delta_y*f+o} Z${d}`)
+    gcodes.push(`G1 X${bs.x*f+o+r} Y${bs.y*f+bs.delta_y*f+a+o} Z0`)
+}
 
 snap.addEventListener("click", function () {
     const refCanvas = document.getElementById('canvasOutput');
     const refContext = refCanvas.getContext('2d');
+    // clearCanvas(refContext)
     // refContext.drawImage(referenceImage, 0, 0, w, h);
     const refImageData = refContext.getImageData(0, 0, w, h);
 
+    // clearCanvas(context)
     context.drawImage(video, 0, 0, w, h);
     const capturedImageData = context.getImageData(0, 0, w, h);
     // console.log(getColor(capturedImageData, Math.floor(w/4), Math.floor(h/4)))
 
     const outCanvas2 = document.getElementById('canvasOutput2');
     const outContext2 = outCanvas2.getContext('2d');
-    clearCanvas(outContext2)
+    // clearCanvas(outContext2)
 
     for(let x = 0; x < w; x++) {
         for(let y = 0; y < h; y++) {
@@ -108,12 +125,15 @@ snap.addEventListener("click", function () {
     const outContext3 = outCanvas3.getContext('2d');
     const outCanvas4 = document.getElementById('canvasOutput4');
     const outContext4 = outCanvas4.getContext('2d');
-    clearCanvas(outContext3)
-    clearCanvas(outContext4)
+
+
+    clearCanvas(outContext3, 240, 160)
+    clearCanvas(outContext4, 240, 160)
     // outContext4.globalCompositeOperation = "darken"
     
     let paintColor = []
     let brushStrokes = []
+    
     // paintColor = [200, 200, 250] 
     // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
     // paintColor = [250, 200, 200] 
@@ -121,15 +141,34 @@ snap.addEventListener("click", function () {
     // paintColor = [200, 250, 200] 
     // brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
 
-    paintColor = [140, 140, 140]
-    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    console.log(paintColor, brushStrokes)
-    paintColor = [240, 240, 240]
-    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    console.log(paintColor, brushStrokes)
-    paintColor = [255, 250, 250]
-    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
-    console.log(paintColor, brushStrokes)
+    // paintColor = [140, 140, 140]
+    // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // console.log(paintColor, brushStrokes)
+
+    paintColor = [255, 255, 170]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 0);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G4 P10`)
+    brushStrokes.map(addGCodes)
+
+    paintColor = [255, 170, 255]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 1);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G4 P20`)
+    brushStrokes.map(addGCodes)
+
+    paintColor = [170, 255, 255]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 2);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G4 P20`)
+    brushStrokes.map(addGCodes)
+
+    console.log(gcodes.join('\n'))
+
+
+    // paintColor = [255, 250, 250]
+    // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
+    // console.log(paintColor, brushStrokes)
     // paintColor = [255, 130, 255] 
     // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
     // console.log(paintColor, brushStrokes)
@@ -146,11 +185,19 @@ snap.addEventListener("click", function () {
 
 });
 
-function brushWithColor(paintColor, capturedImageData, outContext3, outContext4) {
+function brushWithColor(paintColor, capturedImageData, outContext3, outContext4, ci) {
+    const refCanvas = document.getElementById('canvasOutput');
+    const refContext = refCanvas.getContext('2d');
+    refContext.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 1)`;
+    refContext.beginPath();
+    refContext.rect(ci*8, 0, 8, 8);
+    refContext.fill();
+
     let moreToDo = true
     const allStrokes = []
     while (moreToDo) {
         const stroke = scanFor(paintColor, capturedImageData);
+        const randomX = r(8);
         stroke.map((ele) => {
             const color = getColor(capturedImageData, ele.x, ele.y);
             const reducedColor = lightenColor(color, paintColor);
@@ -165,6 +212,11 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4)
             outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.666)`;
             outContext4.beginPath();
             outContext4.rect(ele.x * 10, ele.y * 10, 10, 10);
+            outContext4.fill();
+
+            outContext4.fillStyle = `rgb(0 0 0 / 0.666)`;
+            outContext4.beginPath();
+            outContext4.rect(ele.x * 10 + randomX, ele.y * 10, 1, 10);
             outContext4.fill();
         });
         moreToDo = (stroke.length > 0);
