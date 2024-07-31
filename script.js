@@ -174,26 +174,42 @@ snap.addEventListener("click", function () {
     // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
     // console.log(paintColor, brushStrokes)
 
+    paintColor = [255, 255, 70]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 0);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
+    brushStrokes.map(addGCodes)
+
     paintColor = [255, 255, 170]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 0);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G0 X0 Y0 Z0`)
-    gcodes.push(`M0`) //`G4 P10`)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
+    brushStrokes.map(addGCodes)
+
+    paintColor = [255, 70, 255]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 1);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [255, 170, 255]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 1);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G0 X0 Y0 Z0`)
-    gcodes.push(`M0`) // `G4 P20`)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
+    brushStrokes.map(addGCodes)
+
+    paintColor = [70, 255, 255]
+    brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 2);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [170, 255, 255]
     brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4, 2);
     // console.log(paintColor, brushStrokes)
-    gcodes.push(`G0 X0 Y0 Z0`)
-    gcodes.push(`M0`) //`G4 P20`)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
+
     gcodes.push(`G0 Z0`)
     gcodes.push(`G0 X0 Y0`)
     gcodes.push(`M2`)
