@@ -14,6 +14,26 @@ const loadFile = (event) => {
 }
 // const image = document.getElementById("output");
 
+// downLoad g-code
+let url = null
+let downFilename = "toBrush_"
+
+function triggerGenerateGCode()
+{
+    var text = '' // GCode text
+    var blob = new Blob([text], {type: "text/plain"})
+    if (url != null) {
+        URL.revokeObjectURL(url)
+    }
+    url = URL.createObjectURL(blob)
+    downLink.href = url
+    const now = new Date.now()
+    const name = downFilename + now.toISOString().slice(0, 19) + ".gcode"
+    downLink.innerHTML = name
+    downLink.download = name
+    downLink.style.visibility = "visible"
+}
+
 
 // Get access to the camera
 ready.addEventListener("click", function () {
