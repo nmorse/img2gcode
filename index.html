@@ -7,6 +7,11 @@
 <body>
     <video id="video" width="48" height="32" autoplay></video>
     <button id="ready">ready</button>
+    <div>
+        <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
+        <label for="file" style="cursor: pointer;">Upload Image</label>
+        <img id="output" width="48" height="32" />
+    </div>
     <button id="snap">Snap</button>
     <canvas id="canvasSnap" width="48" height="32"></canvas>
     <canvas id="canvasOutput" name="canvasOutput" width="24" height="16"></canvas>

@@ -7,6 +7,14 @@ const w = 48 // 24 // 320 // 640
 const h = 32 //16 // 240 // 480
 const scale = 5 // 10
 
+const loadFile = (event) => {
+    console.log(event.target.files[0])
+    let imageEle = document.getElementById('output');
+    imageEle.src = URL.createObjectURL(event.target.files[0]);
+}
+// const image = document.getElementById("output");
+
+
 // Get access to the camera
 ready.addEventListener("click", function () {
     navigator.mediaDevices.getUserMedia({ video: true })
