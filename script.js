@@ -6,6 +6,7 @@ const snap = document.getElementById('snap');
 const w = 48 // 24 // 320 // 640
 const h = 32 //16 // 240 // 480
 const scale = 5 // 10
+let gcodes = []
 
 const loadFile = (event) => {
     console.log(event.target.files[0])
@@ -20,14 +21,14 @@ let downFilename = "toBrush_"
 
 function triggerGenerateGCode()
 {
-    var text = '' // GCode text
+    var text = gcodes.join('\n') // GCode text
     var blob = new Blob([text], {type: "text/plain"})
     if (url != null) {
         URL.revokeObjectURL(url)
     }
     url = URL.createObjectURL(blob)
     downLink.href = url
-    const now = new Date.now()
+    const now = new Date()
     const name = downFilename + now.toISOString().slice(0, 19) + ".gcode"
     downLink.innerHTML = name
     downLink.download = name
@@ -111,20 +112,22 @@ const clearCanvas = (ctx, width, height) => {
 }
 
 const r = (scale = 1, offset = 0) => Math.random()*scale+offset
-let gcodes = []
+
 const addGCodes = (bs) => {
     const f = 4 * (scale / 10) // scale factor (150 / 24 === 6.25) (100 / 16 is 6.25) 
-    const d = 3.5 // depth
+    const d = 2.0 // depth
     const o = 20 // x and y offset
-    const a = 10 // approach
+    const zo = 1.5
+    const a = d*3 // approach
     const ra = r()*f
-    gcodes.push(`G0 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f-a+o).toFixed(4)} Z0`)
-    gcodes.push(`G1 F800 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+o).toFixed(4)} Z${d}`)
-    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+bs.delta_y*f+o).toFixed(4)} Z${d}`)
-    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(4)} Y${(bs.y*f+bs.delta_y*f+a+o).toFixed(4)} Z0`)
+    gcodes.push(`G0 X${(bs.x*f+o+ra).toFixed(2)} Y${(bs.y*f-a+o).toFixed(3)} Z${zo.toFixed(2)}`)
+    gcodes.push(`G1 F1200 X${(bs.x*f+o+ra).toFixed(2)} Y${(bs.y*f+o).toFixed(2)} Z${(zo+d).toFixed(2)}`)
+    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(2)} Y${(bs.y*f+bs.delta_y*f+o).toFixed(4)} Z${(zo+d).toFixed(2)}`)
+    gcodes.push(`G1 X${(bs.x*f+o+ra).toFixed(2)} Y${(bs.y*f+bs.delta_y*f+a+o).toFixed(2)} Z${zo.toFixed(2)}`)
 }
 
 snap.addEventListener("click", function () {
+    gcodes = []
     const refCanvas = document.getElementById('canvasOutput');
     const refContext = refCanvas.getContext('2d');
     // clearCanvas(refContext)
@@ -213,10 +216,6 @@ snap.addEventListener("click", function () {
     gcodes.push(`G0 Z0`)
     gcodes.push(`G0 X0 Y0`)
     gcodes.push(`M2`)
-
-
-    console.log(gcodes.join('\n'))
-
 
     // paintColor = [255, 250, 250]
     // brushStrokes = brushWithColor(paintColor, capturedImageData, outContext3, outContext4);
