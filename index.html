@@ -10,7 +10,8 @@
     <div>
         <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
         <label for="file" style="cursor: pointer;">Upload Image</label>
-        <img id="output" width="48" height="32" />
+        <img id="uploadedImage" width="48" height="32" />
+        <canvas id="uploadedCanvas" width="48" height="32" ></canvas>
     </div>
     <button id="snap">Snap</button>
     <canvas id="canvasSnap" width="48" height="32"></canvas>
