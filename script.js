@@ -8,6 +8,7 @@ const h = 32 //16 // 240 // 480
 const scale = 5 // 10
 let gcodes = []
 
+//upload an image into a canvas tag to display and work with...
 const loadFile = (event) => {
     const file = event.target.files[0];
     const canvas = document.getElementById("uploadedCanvas")
@@ -31,33 +32,7 @@ const loadFile = (event) => {
 
         reader.readAsDataURL(file);
     }
-    // console.log(event.target.files[0])
-    // let imageEle = document.getElementById('uploadedImage');
-    // imageEle.src = URL.createObjectURL(event.target.files[0]);
-
-    // // const canvas = document.getElementById('canvasSnap');
-    // // const context = canvas.getContext('2d');
-    // // let capturedImageData = context.getImageData(0, 0, w, h, {"willReadFrequently":true});
-
-    // // Get canvas context
-    // const ctx = document.getElementById("uploadedCanvas").getContext("2d");
-
-    // // Load image
-    // const image = new Image();
-    // image.onload = () => {
-    //     // Draw the image into the canvas
-    //     ctx.drawImage(image, 0, 0);
-    // };
-    // image.src = event.target.files[0];
-
-
-
-    // const upLoadImageContext = imageEle.getContext('2d');
-    // let uploadedImageData = upLoadImageContext.getImageData(0, 0, w, h, { "willReadFrequently": true });
-    // console.log(uploadedImageData)
-    // processImage(uploadedImageData)
 }
-// const image = document.getElementById("output");
 
 // downLoad g-code
 let url = null
@@ -175,13 +150,6 @@ const addGCodes = (bs) => {
 
 function processImage(imageData) {
     gcodes = []
-    // const refCanvas = document.getElementById('canvasOutput');
-    // const refContext = refCanvas.getContext('2d');
-    // // clearCanvas(refContext)
-    // // refContext.drawImage(referenceImage, 0, 0, w, h);
-    // const refImageData = refContext.getImageData(0, 0, w, h);
-
-
     const outCanvas2 = document.getElementById('canvasOutput2');
     const outContext2 = outCanvas2.getContext('2d');
     // clearCanvas(outContext2)
@@ -204,55 +172,51 @@ function processImage(imageData) {
 
     clearCanvas(outContext3, 240, 160)
     clearCanvas(outContext4, 240, 160)
-    // outContext4.globalCompositeOperation = "darken"
+    // outContext4.globalCompositeOperation = "darken" // multiply
 
     let paintColor = []
     let brushStrokes = []
 
-    // paintColor = [200, 200, 250] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // paintColor = [250, 200, 200] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // paintColor = [200, 250, 200] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
 
-    // paintColor = [140, 140, 140]
-    // brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // console.log(paintColor, brushStrokes)
-
-    paintColor = '#fa1243';
-    paintColor = [255, 255, 70]
+    // paintColor = '#fa1243';
+    paintColor = [50, 50, 50]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 0);
+    // console.log(paintColor, brushStrokes)
+    gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
+    brushStrokes.map(addGCodes)
+
+    paintColor = [255, 255, 70]
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 1);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [255, 255, 170]
-    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 0);
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 2);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [255, 70, 255]
-    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 1);
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 3);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [255, 170, 255]
-    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 1);
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 4);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [70, 255, 255]
-    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 2);
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 5);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
     paintColor = [170, 255, 255]
-    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 2);
+    brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 6);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
@@ -261,22 +225,6 @@ function processImage(imageData) {
     gcodes.push(`G0 X0 Y0`)
     gcodes.push(`M2`)
 
-    // paintColor = [255, 250, 250]
-    // brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // console.log(paintColor, brushStrokes)
-    // paintColor = [255, 130, 255] 
-    // brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // console.log(paintColor, brushStrokes)
-    // paintColor = [130, 255, 255] 
-    // brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // console.log(paintColor, brushStrokes)
-
-    // paintColor = [100, 100, 250] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // paintColor = [250, 100, 100] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
-    // paintColor = [100, 250, 100] 
-    // brushWithColor(paintColor, imageData, outContext3, outContext4);
 
 }
 
@@ -293,7 +241,7 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4,
     const refContext = refCanvas.getContext('2d');
     refContext.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 1)`;
     refContext.beginPath();
-    refContext.rect(ci * 8, 0, 8, 8);
+    refContext.rect(ci * 16, 0, 16, 16);
     refContext.fill();
 
     let moreToDo = true
@@ -331,3 +279,49 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4,
     return allStrokes;
 }
 
+
+// color picker
+//const canvas = document.getElementById('canvas');
+//const ctx = canvas.getContext('2d');
+const colorWheel = document.getElementById('colorWheel');
+
+// Load an image onto the canvas
+const img = new Image();
+img.src = 'https://via.placeholder.com/500'; // Replace with your image URL
+img.onload = function() {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+}
+
+// get the color data from the canvas at the clicked position
+const canvasOutput2 = document.getElementById('canvasOutput2');
+const ctxOutput2 = canvasOutput2.getContext('2d');
+
+function getColorAtPixel(event) {
+    const x = event.offsetX;
+    const y = event.offsetY;
+    const imageData = ctxOutput2.getImageData(x, y, 1, 1).data;
+    const color = `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`;
+    return color;
+}
+
+// Event listener for canvas click
+canvasOutput2.addEventListener('click', function(event) {
+    const color = getColorAtPixel(event);
+    colorWheel.value = rgbToHex(color);
+    colorWheel.style.display = 'block';
+});
+
+// Update canvas when the color wheel value changes
+colorWheel.addEventListener('input', function(e) {
+    console.log(e.target.value)
+    console.log(this.value)
+    // ctxOutput2.fillStyle = this.value;
+    // ctxOutput2.fillRect(0, 0, canvas.width, canvas.height);
+    // ctxOutput2.drawImage(img, 0, 0, canvas.width, canvas.height);
+});
+
+// Function to convert RGB to HEX
+function rgbToHex(rgb) {
+    const rgbArray = rgb.match(/\d+/g).map(Number);
+    return `#${rgbArray.map(num => num.toString(16).padStart(2, '0')).join('')}`;
+}
