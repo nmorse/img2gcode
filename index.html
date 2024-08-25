@@ -5,24 +5,24 @@
     <title>Webcam Capture</title>
 </head>
 <body>
-    <video id="video" width="48" height="32" autoplay></video>
+    <video id="video" width="96" height="64" autoplay></video>
     <button id="ready">ready</button>
     <div>
         <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
         <label for="file" style="cursor: pointer;">Upload Image</label>
-        <img id="uploadedImage" width="48" height="32" />
-        <canvas id="uploadedCanvas" width="48" height="32" ></canvas>
+        <img id="uploadedImage" width="96" height="64" />
+        <canvas id="uploadedCanvas" width="96" height="64" ></canvas>
     </div>
     
     <input type="color" id="colorWheel">
     
     <button id="snap">Snap</button>
-    <canvas id="canvasSnap" width="48" height="32"></canvas>
+    <canvas id="canvasSnap" width="96" height="64"></canvas>
     <canvas id="canvasOutput" name="canvasOutput" width="192" height="16"></canvas>
     
-    <canvas id="canvasOutput2" name="canvasOutput2" width="240" height="160"></canvas>
-    <canvas id="canvasOutput3" width="240" height="160"></canvas>
-    <canvas id="canvasOutput4" width="240" height="160"></canvas>
+    <canvas id="canvasOutput2" name="canvasOutput2" width="480" height="320"></canvas>
+    <canvas id="canvasOutput3" width="480" height="320"></canvas>
+    <canvas id="canvasOutput4" width="480" height="320"></canvas>
     <div>
         <input type="button" value="Generate G-Code" onclick="triggerGenerateGCode()">
         <a id="downLink" href=""></a>

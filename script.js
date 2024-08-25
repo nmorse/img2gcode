@@ -3,8 +3,8 @@ const canvas = document.getElementById('canvasSnap');
 const context = canvas.getContext('2d');
 const ready = document.getElementById('ready');
 const snap = document.getElementById('snap');
-const w = 48 // 24 // 320 // 640
-const h = 32 //16 // 240 // 480
+const w = 96 // 48 // 24 // 320 // 640
+const h = 64 // 32 //16 // 240 // 480
 const scale = 5 // 10
 let gcodes = []
 
@@ -172,7 +172,7 @@ function processImage(imageData) {
 
     clearCanvas(outContext3, 240, 160)
     clearCanvas(outContext4, 240, 160)
-    // outContext4.globalCompositeOperation = "darken" // multiply
+    outContext4.globalCompositeOperation = "darken" // multiply
 
     let paintColor = []
     let brushStrokes = []
@@ -185,37 +185,37 @@ function processImage(imageData) {
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [255, 255, 70]
+    paintColor = [255, 255, 170]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 1);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [255, 255, 170]
+    paintColor = [255, 255, 70]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 2);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [255, 70, 255]
+    paintColor = [255, 170, 255]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 3);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [255, 170, 255]
+    paintColor = [255, 70, 255]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 4);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [70, 255, 255]
+    paintColor = [170, 255, 255]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 5);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
     brushStrokes.map(addGCodes)
 
-    paintColor = [170, 255, 255]
+    paintColor = [70, 255, 255]
     brushStrokes = brushWithColor(paintColor, imageData, outContext3, outContext4, 6);
     // console.log(paintColor, brushStrokes)
     gcodes.push(`G0 Z0`, `G0 X0 Y0`, `M0`)
@@ -260,12 +260,12 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4,
 
 
             // outContext4.fillStyle = `rgba(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} 1)`
-            outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.666)`;
+            outContext4.fillStyle = `rgb(${paintColor[0]} ${paintColor[1]} ${paintColor[2]} / 0.1666)`;
             outContext4.beginPath();
             outContext4.rect(ele.x * scale, ele.y * scale, scale, scale);
             outContext4.fill();
 
-            outContext4.fillStyle = `rgb(0 0 0 / 0.666)`;
+            outContext4.fillStyle = `rgb(0 0 0 / 0.266)`;
             outContext4.beginPath();
             outContext4.rect(ele.x * scale + randomX, ele.y * scale, 1, scale);
             outContext4.fill();
@@ -284,13 +284,6 @@ function brushWithColor(paintColor, capturedImageData, outContext3, outContext4,
 //const canvas = document.getElementById('canvas');
 //const ctx = canvas.getContext('2d');
 const colorWheel = document.getElementById('colorWheel');
-
-// Load an image onto the canvas
-const img = new Image();
-img.src = 'https://via.placeholder.com/500'; // Replace with your image URL
-img.onload = function() {
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-}
 
 // get the color data from the canvas at the clicked position
 const canvasOutput2 = document.getElementById('canvasOutput2');
